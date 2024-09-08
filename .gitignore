@@ -12,3 +12,4 @@ _deps
 pico/pico-sdk/
 pico/pico-sdk/*
 pico/build
+pico/.cache

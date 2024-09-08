@@ -9,8 +9,8 @@
 
 int main() {
     stdio_init_all();
-	while (1) {
-		printf("Hello world");
-		sleep_ms(300);
-	}
+    while (1) {
+	    printf("Hello world");
+	    sleep_ms(300);
+    }
 }
