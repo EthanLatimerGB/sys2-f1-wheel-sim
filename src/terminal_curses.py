@@ -62,6 +62,14 @@ def handle_commands(stdscr):
             if value >= 0 and value <= 100:
                 g.ECU_CAR_BRAKE.set(value / 100)
                 printToCurses("Brake pressure: {}".format(g.ECU_CAR_BRAKE.get()))
+        case "HELP":
+            printToCurses("============= HELP ==============")
+            printToCurses("- THROTTLE <1-100> : Change throttle from 0 to 100%")
+            printToCurses("- GEAR <1-8> : Change gear")
+            printToCurses(
+                "- BRAKE <1-100> : Press on the brake with pressure from 0 to 100%"
+            )
+            printToCurses("==================================")
         case "QUIT":
             g.root.quit()
             exit()
