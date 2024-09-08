@@ -1,27 +1,33 @@
 import src.globals as g
 
 import curses
+import threading
 import tkinter as tk
 
+history = [
+    "This is the car simulation command line",
+    "Enter commands to change the behaviour of the car, type HELP for the list of commands",
+]
+history_lock = threading.Lock()
 
-##
-## Handle Commands
-##
+
+# Main entrypoint for curses
 def cursesCommandLine(stdscr):
+    global history
     global current_command
 
+    max_history = curses.LINES - 1
+
     stdscr.clear()
-    stdscr.addstr(0, 0, "This is the car simulation command line")
-    stdscr.addstr(
-        1,
-        0,
-        "Enter commands to change the behaviour of the car, type HELP for the list of commands",
-    )
     curses.echo()
 
     stdscr.refresh()
 
     while not g.exit_flag:
+        with history_lock:
+            for num, line in enumerate(history[-max_history:]):
+                stdscr.addstr(num, 0, line)
+
         stdscr.addstr(curses.LINES - 1, 0, "> ")
         current_command = stdscr.getstr(curses.LINES - 1, 3).decode("utf-8")
         stdscr.clrtoeol()
@@ -33,6 +39,7 @@ def cursesCommandLine(stdscr):
 # THROTTLE <INT>
 # BRAKE <INT>
 # POWER <Bool>
+# HELP
 def handle_commands(stdscr):
     if current_command == "":
         return
@@ -43,31 +50,27 @@ def handle_commands(stdscr):
             value = int(tokens[1])
             if value >= 0 and value <= 100:
                 g.ECU_CAR_THROTTLE.set(value / 100)
-                stdscr.addstr(
-                    curses.LINES - 2,
-                    0,
-                    "Throttle open: {}".format(g.ECU_CAR_THROTTLE.get()),
-                )
+                printToCurses("Throttle open: {}".format(g.ECU_CAR_THROTTLE.get()))
                 stdscr.refresh()
         case "GEAR":
             gearNumber = int(tokens[1])
             if gearNumber < 9 and gearNumber > 0:
                 g.request_gear_change = gearNumber
-                stdscr.addstr(
-                    curses.LINES - 2, 0, "Changed gear to: {}".format(gearNumber)
-                )
+                printToCurses("Changed gear to: {}".format(gearNumber))
         case "BRAKE":
             value = int(tokens[1])
             if value >= 0 and value <= 100:
                 g.ECU_CAR_BRAKE.set(value / 100)
-                stdscr.addstr(
-                    curses.LINES - 2,
-                    0,
-                    "Brake pressure: {}".format(g.ECU_CAR_BRAKE.get()),
-                )
+                printToCurses("Brake pressure: {}".format(g.ECU_CAR_BRAKE.get()))
         case "QUIT":
             g.root.quit()
             exit()
+
+
+def printToCurses(text):
+    global history
+    with history_lock:
+        history.append(text)
 
 
 def buildGUI():
