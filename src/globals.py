@@ -1,7 +1,15 @@
 import tkinter as tk
+import threading
 import time
 
 root = tk.Tk()
+
+# Command history
+history = [
+    "This is the car simulation command line",
+    "Enter commands to change the behaviour of the car, type HELP for the list of commands",
+]
+history_lock = threading.Lock()
 
 # Global Variables
 ENGINE_REDLINE = 15000

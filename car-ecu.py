@@ -7,7 +7,7 @@ import src.uart as comm
 
 import threading
 import tkinter as tk
-import serial
+import sys
 from curses import wrapper
 
 """
@@ -19,33 +19,29 @@ __license__ = "MIT"
 
 # Main entry point of the app
 def main(stdscr):
+    # Terminal and simulation threads starting
     carsim_thread = threading.Thread(target=lambda: src.simulator.simulateCar())
     carsim_thread_daemon = True
 
     curses_thread = threading.Thread(target=cur.cursesCommandLine, args=(stdscr,))
     curses_thread_daemon = True
 
-    # pico_listener_thread = threading.Thread(target=comm.listen)
-
     carsim_thread.start()
     curses_thread.start()
-    # pico_listener_thread.start()
 
+    # Optional listening to a pico microcontroller
+    if len(sys.argv) < 2:
+        cur.printToCurses("WARNING: No location provided in command-line arguments")
+        cur.printToCurses("\t No UART communication will happen")
+    else:
+        SERIAL_LOCATION = sys.argv[1]
+        pico_listener_thread = threading.Thread(
+            target=comm.listen, args=(SERIAL_LOCATION,)
+        )
+        pico_listener_thread.start()
+
+    # TkInter service init
     cur.buildGUI()
-
-    ser = serial.Serial()
-    ser.baudrate = 115200
-    ser.port = "/dev/ttyACM1"
-    ser.timeout = 1
-
-    cur.printToCurses("deez")
-
-    # while True:
-    #     cur.history.append("bum")
-    #     if ser.in_waiting > 0:
-    #         data = ser.readline().decode("utf-8").strip()
-    #         with cur.history_lock:
-    #             cur.history.append(data)
 
 
 if __name__ == "__main__":

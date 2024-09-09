@@ -4,16 +4,13 @@ import curses
 import threading
 import tkinter as tk
 
-history = [
-    "This is the car simulation command line",
-    "Enter commands to change the behaviour of the car, type HELP for the list of commands",
-]
-history_lock = threading.Lock()
+
+# TODO:Use the gpt prompt to allow updating the terminal without forgetting,
+# the keys typed into the terminal
 
 
 # Main entrypoint for curses
 def cursesCommandLine(stdscr):
-    global history
     global current_command
 
     max_history = curses.LINES - 1
@@ -24,8 +21,8 @@ def cursesCommandLine(stdscr):
     stdscr.refresh()
 
     while not g.exit_flag:
-        with history_lock:
-            for num, line in enumerate(history[-max_history:]):
+        with g.history_lock:
+            for num, line in enumerate(g.history[-max_history:]):
                 stdscr.addstr(num, 0, line)
 
         stdscr.addstr(curses.LINES - 1, 0, "> ")
@@ -45,6 +42,7 @@ def handle_commands(stdscr):
         return
 
     tokens = current_command.split(" ")
+    printToCurses(f"USR => {current_command}")
     match tokens[0].upper():
         case "THROTTLE":
             value = int(tokens[1])
@@ -69,6 +67,7 @@ def handle_commands(stdscr):
             printToCurses(
                 "- BRAKE <1-100> : Press on the brake with pressure from 0 to 100%"
             )
+            printToCurses("- QUIT: Exit application")
             printToCurses("==================================")
         case "QUIT":
             g.root.quit()
@@ -76,9 +75,8 @@ def handle_commands(stdscr):
 
 
 def printToCurses(text):
-    global history
-    with history_lock:
-        history.append(text)
+    with g.history_lock:
+        g.history.append(text)
 
 
 def buildGUI():
