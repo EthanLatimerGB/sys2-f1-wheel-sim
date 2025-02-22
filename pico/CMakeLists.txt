@@ -25,7 +25,9 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(F1Wheel src/blink.c )
+add_executable(F1Wheel 
+  src/main.c 
+  src/communication.c)
 
 pico_set_program_name(F1Wheel "F1Wheel")
 pico_set_program_version(F1Wheel "0.1")
