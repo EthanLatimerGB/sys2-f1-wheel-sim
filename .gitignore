@@ -13,3 +13,5 @@ pico/pico-sdk/
 pico/pico-sdk/*
 pico/build
 pico/.cache
+.cache/*
+.cache/

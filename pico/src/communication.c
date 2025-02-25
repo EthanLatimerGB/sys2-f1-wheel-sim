@@ -5,6 +5,9 @@
 #define UART_TX_PIN 0
 #define UART_RX_PIN 1
 
+int dma_channel;
+uint8_t uart_rx_buffer[256];
+
 void setupUART()
 {
 	uart_init(UART_ID, BAUD_RATE);

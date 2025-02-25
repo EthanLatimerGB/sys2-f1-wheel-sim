@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 # Initialise pico_sdk from installed location
 # (note this can come from environment, CMake cache etc)
-set(PICO_SDK_PATH "/home/ethanlatimer/Dev/Pico/pico-sdk")
+set(PICO_SDK_PATH "/home/elatimer/Dev/Pico/pico-sdk")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(PICO_BOARD pico_w CACHE STRING "Board type")
 
@@ -23,10 +23,27 @@ project(F1Wheel C CXX ASM)
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
-# Add executable. Default name is the project name, version 0.1
+# Compile source for Pico LCD Display libraries
+add_subdirectory(lib/Config)
+add_subdirectory(lib/Infrared)
+add_subdirectory(lib/OLED)
+add_subdirectory(lib/Icm20948)
+add_subdirectory(lib/LCD)
+add_subdirectory(lib/Fonts)
+add_subdirectory(lib/GUI)
 
+# Include headers from Pico LCD Display libraries
+include_directories(./lib/Config)
+include_directories(./lib/GUI)
+include_directories(./lib/Icm20948)
+include_directories(./lib/LCD)
+include_directories(./lib/Infrared)
+include_directories(./lib/OLED)
+
+# Add executable. Default name is the project name, version 0.1
 add_executable(F1Wheel 
   src/main.c 
+  src/display.c
   src/communication.c)
 
 pico_set_program_name(F1Wheel "F1Wheel")
@@ -37,7 +54,12 @@ pico_enable_stdio_uart(F1Wheel 0)
 
 # Add the standard library to the build
 target_link_libraries(F1Wheel
-        pico_stdlib)
+        pico_stdlib
+        hardware_spi
+        hardware_i2c
+        hardware_pwm
+        LCD OLED Infrared Icm20948 GUI Fonts Config
+)
 
 # Add the standard include files to the build
 target_include_directories(F1Wheel PRIVATE

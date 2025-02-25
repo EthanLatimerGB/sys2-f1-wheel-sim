@@ -4,8 +4,11 @@
 #include <hardware/regs/intctrl.h>
 #include <hardware/uart.h>
 
-int dma_channel;
-uint8_t uart_rx_buffer[256];
+/*
+ * A interrupt handler that processes input messages that comes through 
+ */
+void command_over_uart_handler();
+
 
 /*
  * Sets up the UART pins on GPIO for message communication between PC and Pico
