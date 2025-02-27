@@ -26,14 +26,18 @@ int main() {
   // setupDMAInterrupts();
 
   init_display();
+  int j = 1;
 
   // Set up repeating timer, this is an API call that sets up an IRQ
   while (1) {
-    char num_buffer[6];
-    for (int i = 0; i < 15000; i+=200) {
-	sleep_ms(16);
-      sprintf(num_buffer, "%*d", 5, i);
-      update_RPM(num_buffer);
+    j += 1;
+    update_gear(&j);
+
+    for (int i = 0; i < 15000; i += 200) {
+      sleep_ms(8);
+      update_RPM(&i);
+      update_speed(&i);
+      draw_display();
     }
   }
 }

@@ -2,6 +2,7 @@
 #include "DEV_Config.h"
 #include "GUI_Paint.h"
 #include "LCD_1in3.h"
+#include "config.h"
 #include "lib/Fonts/fonts.h"
 #include <pico/time.h>
 
@@ -15,7 +16,6 @@
 UWORD *image_buf_ptr;
 
 void init_display() {
-  sleep_ms(2000);
   printf("Initialising defualt display configuration\n");
   // Intialises SPI interface with display
   if (DEV_Module_Init() != 0) {
@@ -44,25 +44,65 @@ void init_display() {
   Paint_Clear(BACKGROUND);
   Paint_DrawRectangle(18, 38, 222, 18 + 152, PRIMARY, DOT_PIXEL_3X3,
                       DRAW_FILL_EMPTY);
-  Paint_DrawRectangle(18, 38, 18 + 70, 18 + 152, PRIMARY, DOT_PIXEL_3X3,
+  Paint_DrawRectangle(18, 38, 18 + 70, 18 + 152, PRIMARY, DOT_PIXEL_1X1,
                       DRAW_FILL_FULL);
+
+  Paint_DrawString_EN(100, 218, "km/h", &Font12, WHITE, BACKGROUND);
 
   // Refreshes image buffer
   LCD_1IN3_Display(image_buf_ptr);
 }
 
-void update_RPM(const char *rpmString) {
-  Paint_SelectImage((UBYTE *)image_buf_ptr);
+void update_RPM(int *rpm) {
+  // Calculating string buffer for RPM to display
+  char num_buffer[5];
+  sprintf(num_buffer, "%*d", 5, *rpm);
 
-  Paint_ClearWindows(120, 80, 220, 104, BACKGROUND);
-  Paint_DrawString_EN(120, 80, rpmString, &Font24, WHITE, BACKGROUND);
-  LCD_1IN3_DisplayWindows(120, 80, 220, 104, image_buf_ptr);
+  // Drawing rev counter distance
+  int rev_counter_pixels = findRevMeterPixels(rpm);
+  printf("Rev percentage: %d \n", rev_counter_pixels);
+  Paint_ClearWindows(0, 0, LCD_1IN3_WIDTH, 20, BACKGROUND);
+  Paint_DrawRectangle(0, 0, rev_counter_pixels, 20, REV_COUNTER_BLUE,
+                      DOT_PIXEL_DFT, DRAW_FILL_FULL);
+
+  // Drwawing rev counter text
+  Paint_DrawString_EN(120, 90, num_buffer, &Font24, WHITE, BACKGROUND);
+  // LCD_1IN3_DisplayWindows(120, 90, 210, 114, image_buf_ptr);
+  // LCD_1IN3_DisplayWindows(0, 0, LCD_1IN3_WIDTH, 20, image_buf_ptr);
 }
 
-void update_gear(const char *gearNumber) {
+void update_gear(int *gearNumber) {
+  // Calculate string buffer
+  char gear_string[2];
+  sprintf(gear_string, "%*d", 2, *gearNumber);
+
+  Paint_SelectImage((UBYTE *)image_buf_ptr);
+  Paint_DrawString_EN(40, 90, gear_string, &Font24, WHITE, PRIMARY);
+  // LCD_1IN3_DisplayWindows(40, 90, 88, 114, image_buf_ptr);
+}
+
+void update_speed(int *speed) {
+  char num_buffer[4];
+  sprintf(num_buffer, "%*d", 4, *speed);
+
   Paint_SelectImage((UBYTE *)image_buf_ptr);
 
-  Paint_ClearWindows(120, 80, 220, 104, BACKGROUND);
-  Paint_DrawString_EN(120, 100, gearNumber, &Font24, WHITE, BACKGROUND);
-  LCD_1IN3_DisplayWindows(120, 100, 220, 130, image_buf_ptr);
+  Paint_DrawString_EN(100, 189, num_buffer, &Font24, WHITE, BACKGROUND);
+  // LCD_1IN3_DisplayWindows(100, 189, 140, 216, image_buf_ptr);
+}
+
+void draw_display() {
+  LCD_1IN3_Display(image_buf_ptr);
+  return;
+}
+
+int findRevMeterPixels(int *engineRPM) {
+  if (*engineRPM < 10000)
+    return 0;
+
+  if (*engineRPM > MAX_ENGINE_RPM)
+    return LCD_1IN3_WIDTH;
+
+  // Maps engine RPM from [10000, 15000] onto pixel values [0,240]
+  return ((*engineRPM - 10000) * LCD_1IN3_WIDTH) / (MAX_ENGINE_RPM - 10000);
 }
