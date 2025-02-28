@@ -32,6 +32,7 @@ add_subdirectory(lib/Icm20948)
 add_subdirectory(lib/LCD)
 add_subdirectory(lib/Fonts)
 add_subdirectory(lib/GUI)
+add_subdirectory(lib/lvgl)
 
 # Include headers from Pico LCD Display libraries
 include_directories(./lib/Config)
@@ -40,6 +41,7 @@ include_directories(./lib/Icm20948)
 include_directories(./lib/LCD)
 include_directories(./lib/Infrared)
 include_directories(./lib/OLED)
+include_directories(./lib/lvgl)
 
 # Add executable. Default name is the project name, version 0.1
 add_executable(F1Wheel 
@@ -53,13 +55,15 @@ pico_set_program_version(F1Wheel "0.1")
 pico_enable_stdio_usb(F1Wheel 1)
 pico_enable_stdio_uart(F1Wheel 0)
 
+target_compile_definitions(F1Wheel PRIVATE LV_CONF_INCLUDE_SIMPLE)
+
 # Add the standard library to the build
 target_link_libraries(F1Wheel
         pico_stdlib
         hardware_spi
+        hardware_dma
         hardware_i2c
         hardware_pwm
-        LCD OLED Infrared Icm20948 GUI Fonts Config
 )
 
 # Add the standard include files to the build
@@ -71,6 +75,8 @@ target_include_directories(F1Wheel PRIVATE
 # Add any user requested libraries
 target_link_libraries(F1Wheel 
         pico_cyw43_arch_none
+        LCD OLED Infrared Icm20948 GUI Fonts Config
+        lvgl
         )
 
 pico_add_extra_outputs(F1Wheel)

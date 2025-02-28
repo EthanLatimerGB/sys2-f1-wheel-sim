@@ -16,7 +16,7 @@
 UWORD *image_buf_ptr;
 
 void init_display() {
-  printf("Initialising defualt display configuration\n");
+  printf("Initializing LVGL display...\n");
   // Intialises SPI interface with display
   if (DEV_Module_Init() != 0) {
     printf("Failed to initlaise display, check your connections to display and "
@@ -24,9 +24,7 @@ void init_display() {
     return;
   }
 
-  // No idea what this does, but part of init steps
-  DEV_SET_PWM(50);
-
+  DEV_SET_PWM(50);      // Set backlight
   LCD_1IN3_Init(HORIZONTAL);
 
   UDOUBLE image_buf_size = LCD_1IN3_HEIGHT * LCD_1IN3_WIDTH * 2;
