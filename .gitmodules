@@ -1,0 +1,3 @@
+[submodule "pico/lib/lvgl"]
+	path = pico/lib/lvgl
+	url = https://github.com/lvgl/lvgl.git
