@@ -3,17 +3,35 @@
 #include <hardware/regs/dreq.h>
 #include <hardware/regs/intctrl.h>
 #include <hardware/uart.h>
+#include <stdint.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <stddef.h>
+#include <stdio.h>
+
+#define MAX_COMMANDS 5
+
+typedef enum { EXPR_ES, EXPR_CS, EXPR_CG, EXPR_T, EXPR_B, EXPR_INVALID } Expr;
+
+typedef struct {
+	Expr cmd;
+	uint16_t value;
+} Command;
 
 /*
  * A interrupt handler that processes input messages that comes through 
  */
 void command_over_uart_handler();
 
-
 /*
  * Sets up the UART pins on GPIO for message communication between PC and Pico
 */
 void setupUART();
+
+/*
+ *
+ */
 
 /*
  * Sets up the DMA controller to directly manipulate the memory buffer uart_rx_buffer, with data coming from UART RX
@@ -30,3 +48,17 @@ void setupDMAInterrupts();
  * IRQ triggered by DMA controller
 */
 void dmaIRQhandler();
+
+/*
+ * Handles interpreting an input string and breaks it up into a list of Commands. 
+ * Will transfer parsed contents into parsed_buffer variable.
+ *
+ * Grammar is defined as:
+ * CMDS := CMD | CMD ';' CMDS
+ * CMD  := EXPR ':' VAL
+ * EXPR := 'ES' | 'CS' | 'CG' | 'T' | 'B'
+ * VAL  := 16-bit unsigned integer (0 to 65535)
+ *
+ * \param Single line which contains the commands.
+*/
+void handleInputCommands(char *line);

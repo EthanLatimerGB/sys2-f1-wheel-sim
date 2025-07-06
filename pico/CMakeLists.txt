@@ -7,7 +7,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 # Initialise pico_sdk from installed location
 # (note this can come from environment, CMake cache etc)
-set(PICO_SDK_PATH "/home/elatimer/Dev/Pico/pico-sdk")
+# set(PICO_SDK_PATH "/home/elatimer/Dev/Pico/pico-sdk")
+set(PICO_SDK_PATH "/home/ethanlatimer/Dev/Pico/pico-sdk")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(PICO_BOARD pico_w CACHE STRING "Board type")
 set(CMAKE_BUILD_TYPE Debug)
@@ -25,7 +26,7 @@ project(F1Wheel C CXX ASM)
 pico_sdk_init()
 
 # This is where our configuration file for the Grpahics Library LVGL lives
-add_compile_definitions(LV_CONF_PATH=\"${CMAKE_SOURCE_DIR}/src/lv_conf.h\")
+#add_compile_definitions(LV_CONF_PATH=\"${CMAKE_SOURCE_DIR}/src/lv_conf.h\")
 
 # Compile source for Pico LCD Display libraries
 add_subdirectory(lib/Config)
@@ -35,16 +36,17 @@ add_subdirectory(lib/Icm20948)
 add_subdirectory(lib/LCD)
 add_subdirectory(lib/Fonts)
 add_subdirectory(lib/GUI)
-add_subdirectory(lvgl)
+#add_subdirectory(lvgl)
 
 # Include headers from Pico LCD Display libraries
+include_directories(./src)
 include_directories(./lib/Config)
 include_directories(./lib/GUI)
 include_directories(./lib/Icm20948)
 include_directories(./lib/LCD)
 include_directories(./lib/Infrared)
 include_directories(./lib/OLED)
-include_directories(./lvgl)
+#include_directories(./lvgl)
 
 # Add executable. Default name is the project name, version 0.1
 add_executable(F1Wheel 
@@ -77,9 +79,8 @@ target_include_directories(F1Wheel PRIVATE
 # Add any user requested libraries
 target_link_libraries(F1Wheel 
         pico_cyw43_arch_none
-        LCD OLED Infrared Icm20948 GUI Fonts Config
-        lvgl
+        LCD OLED Infrared Icm20948 GUI Fonts Config pico_stdlib
         )
+        # lvgl
 
 pico_add_extra_outputs(F1Wheel)
-
