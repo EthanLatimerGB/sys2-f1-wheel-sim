@@ -30,10 +30,6 @@ void command_over_uart_handler();
 void setupUART();
 
 /*
- *
- */
-
-/*
  * Sets up the DMA controller to directly manipulate the memory buffer uart_rx_buffer, with data coming from UART RX
 */
 void setupDMAforUART();
@@ -50,7 +46,11 @@ void setupDMAInterrupts();
 void dmaIRQhandler();
 
 /*
- * Handles interpreting an input string and breaks it up into a list of Commands. 
+ * Given two strings, each containing the information extracted from a string, this function returns it's formatted Command. Commands with EXPR_INVALID should be ignored and not acted on further. 
+*/
+Command parseCommand(const char *command_str, const char *value_str);
+/*
+ * Handles interpreting an input string and breaks it up into a list of Commands, which is saved . 
  * Will transfer parsed contents into parsed_buffer variable.
  *
  * Grammar is defined as:
@@ -60,5 +60,7 @@ void dmaIRQhandler();
  * VAL  := 16-bit unsigned integer (0 to 65535)
  *
  * \param Single line which contains the commands.
+ * \param The location of the Command array
+ * \param The size of the command array
 */
-void handleInputCommands(char *line);
+int parseInput(const char *input, Command * commands, int max_commands);

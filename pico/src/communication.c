@@ -6,8 +6,8 @@
 #define UART_RX_PIN 1
 
 int dma_channel;
+
 uint8_t uart_rx_buffer[256];
-Command unacknowledged_cmds[MAX_COMMANDS];
 
 /*
  * ES	-> Engine Speed
@@ -135,6 +135,8 @@ int parseInput(const char *input, Command *commands, int max_commands)
 			continue;
 
 		printf("CMD: %d, V: %d\n", parsed_cmd.cmd, parsed_cmd.value);
+
+		commands[command_count] = parsed_cmd;
 
 		command_count++;
 		piece = strtok_r(NULL, ";", &saveptr);
