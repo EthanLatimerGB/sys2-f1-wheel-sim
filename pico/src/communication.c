@@ -134,11 +134,15 @@ int parseInput(const char *input, Command *commands, int max_commands)
 		if (parsed_cmd.cmd == EXPR_INVALID)
 			continue;
 
-		printf("CMD: %d, V: %d\n", parsed_cmd.cmd, parsed_cmd.value);
-
 		commands[command_count] = parsed_cmd;
 
 		command_count++;
 		piece = strtok_r(NULL, ";", &saveptr);
 	}
+
+	// Set all others to invalid so they are not processed
+	for (int i = command_count; i < MAX_COMMANDS; i++) {
+		commands[i].cmd = EXPR_INVALID;
+	}
+
 }

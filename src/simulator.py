@@ -1,6 +1,7 @@
 import math
 import time
 import src.globals as g
+from src.uart import send_update
 
 ##
 ## Car Simulation
@@ -39,6 +40,11 @@ def simulateCar():
         # Factor in drag
         if g.ECU_ENGINE_SPEED.get() > 0:
             speedsFactoringInDrag(timeDiff)
+
+        car_speed_int = int(g.ECU_CAR_SPEED.get())
+        car_engine_int = int(g.ECU_ENGINE_SPEED.get())
+
+        send_update(f"CS:{car_speed_int};ES:{car_engine_int};")
         time.sleep(1 / 60)
 
 

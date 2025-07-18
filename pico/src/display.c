@@ -63,7 +63,7 @@ void update_RPM(uint16_t *rpm)
 	// Drawing rev counter distance
 	int rev_counter_pixels = findRevMeterPixels(rpm);
 
-	printf("UPDATED ENGINE SPEED: %d \n", rpm);
+	// printf("UPDATED ENGINE SPEED: %d \n", rpm);
 	Paint_ClearWindows(0, 0, LCD_1IN3_WIDTH, 20, BACKGROUND);
 	Paint_DrawRectangle(0, 0, rev_counter_pixels, 20, REV_COUNTER_BLUE,
 			    DOT_PIXEL_DFT, DRAW_FILL_FULL);
@@ -80,7 +80,7 @@ void update_gear(uint16_t *gearNumber)
 	char gear_string[2];
 	sprintf(gear_string, "%*d", 2, *gearNumber);
 
-	printf("UPDATED GEAR: %d \n", gearNumber);
+	// printf("UPDATED GEAR: %d \n", gearNumber);
 	Paint_SelectImage((UBYTE *) image_buf_ptr);
 	Paint_DrawString_EN(40, 90, gear_string, &Font24, WHITE, PRIMARY);
 	// LCD_1IN3_DisplayWindows(40, 90, 88, 114, image_buf_ptr);
@@ -91,7 +91,7 @@ void update_speed(uint16_t *speed)
 	char num_buffer[4];
 	sprintf(num_buffer, "%*d", 4, *speed);
 
-	printf("UPDATED CAR SPEED: %d \n", speed);
+	// printf("UPDATED CAR SPEED: %d \n", speed);
 	Paint_SelectImage((UBYTE *) image_buf_ptr);
 
 	Paint_DrawString_EN(100, 189, num_buffer, &Font24, WHITE, BACKGROUND);
