@@ -25,8 +25,12 @@ project(F1Wheel C CXX ASM)
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
-# This is where our configuration file for the Grpahics Library LVGL lives
-#add_compile_definitions(LV_CONF_PATH=\"${CMAKE_SOURCE_DIR}/src/lv_conf.h\")
+# Configuring LVGL first, and defining a custom location for the config file
+# set(LV_BUILD_CONF_PATH /home/ethanlatimer/Dev/Pico/sys2-f1-wheel-sim/pico/lib/lv_conf.h)  # Can only get absolute paths to work
+set(LV_BUILD_CONF_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib/lv_conf.h CACHE STRING "LVGL configuration file")  # Can only get absolute paths to work
+set(CONFIG_LV_BUILD_EXAMPLES OFF)
+set(CONFIG_LV_BUILD_DEMOS OFF)
+add_subdirectory(lib/lvgl)
 
 # Compile source for Pico LCD Display libraries
 add_subdirectory(lib/Config)
@@ -63,6 +67,7 @@ pico_enable_stdio_uart(F1Wheel 0)
 
 # Add the standard library to the build
 target_link_libraries(F1Wheel
+        lvgl
         pico_stdlib
         hardware_spi
         hardware_dma

@@ -1,0 +1,4 @@
+-linux
+-i8
+-ts8
+-nut
