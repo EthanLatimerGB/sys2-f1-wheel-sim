@@ -21,12 +21,10 @@ Command unacknowledged_cmds[MAX_COMMANDS];
 
 int main()
 {
-	if (DEV_Module_Init() != 0) {
+	if (init_display() != 0) {
+		printf("Catastrophic failure to init - report issue");
 		return -1;
 	}
-
-	LCD_1IN3_Init(HORIZONTAL);
-	LCD_1IN3_Clear(0xFFFF);	// init as white
 
 	/*
 
