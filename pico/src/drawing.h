@@ -7,8 +7,6 @@
 #define DISP_HOR_RES 240
 #define DISP_VER_RES 240
 
-uint dma_tx;			// Pin used for DMA interrupts
-
 /**
  * typedef struct - State Object for LVGL in order to draw those objects included.
  * @scr:	Defines all the possible screens.
@@ -57,7 +55,7 @@ typedef void (*LCD_SetWindowsFunc)(int32_t, int32_t, int32_t, int32_t);
 * Callback function to send LVGL display data to display driver.
 */
 void display_flush_cb(lv_display_t * display, const lv_area_t * area,
-		      lv_color_t * color_p);
+		      uint8_t * color_p);
 
 /**
 * Intialises LVGL contexts and builds the widgets.

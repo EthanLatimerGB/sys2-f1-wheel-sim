@@ -45,7 +45,7 @@ static inline uint32_t area_pixel_cnt(const lv_area_t *a)
  * An IRQ separate to this function will handle when the process has completed. 
  */
 void display_flush_cb(lv_display_t *display, const lv_area_t *area,
-		      lv_color_t *color_p)
+		      uint8_t *color_p)
 {
 	LCDSetWindows(area->x1, area->y1, area->x2, area->y2);
 	DEV_Digital_Write(LCD_DC_PIN, 1);	// Data is written
@@ -75,7 +75,7 @@ void display_flush_cb(lv_display_t *display, const lv_area_t *area,
 	display_lcd = lv_display_create(DISP_HOR_RES, DISP_VER_RES);
 
 	// Initialising the draw buffers (Less tearing). It is 1/10th of a screen
-	// as a engineer choice for good space usage but maintains decent perf.
+	// by choice for good space usage but maintains decent perf.
 	// These buffers will be sent over SPI to the display IC and later gets called
 	// to draw by this controller. 
 	buf0 = malloc(DISP_HOR_RES * DISP_VER_RES * sizeof(lv_color_t) / 10);

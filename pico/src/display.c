@@ -1,9 +1,6 @@
 #include "display.h"
 #include "DEV_Config.h"
-#include "GUI_Paint.h"
 #include "LCD_1in3.h"
-#include "config.h"
-#include "lib/Fonts/fonts.h"
 #include <hardware/dma.h>
 #include <pico/time.h>
 #include <stdint.h>
@@ -16,11 +13,8 @@
 #define REV_COUNTER_BLUE 0x047f
 
 UWORD *image_buf_ptr;
-
-void flush_to_display()
-{
-
-}
+uint dma_tx;			// Transmit pin for DMA to Display
+dma_channel_config dma_cfg;
 
 int init_display()
 {

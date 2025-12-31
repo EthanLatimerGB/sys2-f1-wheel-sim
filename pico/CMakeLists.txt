@@ -7,8 +7,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 # Initialise pico_sdk from installed location
 # (note this can come from environment, CMake cache etc)
-# set(PICO_SDK_PATH "/home/elatimer/Dev/Pico/pico-sdk")
-set(PICO_SDK_PATH "/home/ethanlatimer/Dev/Pico/pico-sdk")
+set(PICO_SDK_PATH "/home/elatimer/Dev/Pico/pico-sdk")
+# set(PICO_SDK_PATH "/home/ethanlatimer/Dev/Pico/pico-sdk")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(PICO_BOARD pico_w CACHE STRING "Board type")
 set(CMAKE_BUILD_TYPE Debug)
@@ -63,12 +63,14 @@ pico_set_program_version(F1Wheel "0.1")
 
 pico_enable_stdio_usb(F1Wheel 1)
 pico_enable_stdio_uart(F1Wheel 0)
+pico_enable_stdio_semihosting(F1Wheel 1)  # Add this for debug output
 
 
 # Add the standard library to the build
 target_link_libraries(F1Wheel
         lvgl
         pico_stdlib
+        pico_stdio_usb
         hardware_spi
         hardware_dma
         hardware_i2c
